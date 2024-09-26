@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {User} from "../Shared/Modules/user";
 import {NgForOf} from "@angular/common";
 import {StudentDetailComponent} from "../student-detail/student-detail.component";
+import {StudentService} from "../Services/student.service";
 
 
 @Component({
@@ -16,8 +17,18 @@ export class StudentListComponent {
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'department', 'isAdmin'];
   userList:User[]=[];
 
+constructor (private studentService: StudentService){
 
+}
 
+  ngOnInit(){
+    //This lifecycle hook is a good place to fetch and init our data
+    this.studentService.getStudents().subscribe({
+      next: (data: User[]) => this.userList = data,
+      error: err => console.error("Error fetching Students", err),
+      complete: () => console.log("Student data fetch complete!")
+    })
+  }
 
   //Catch the onclick event from the html
   selectedStudent?: User;
